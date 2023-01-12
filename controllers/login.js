@@ -5,6 +5,10 @@ import JwtService from "../services/JwtService";
 import Mailer from "../services/Mailer";
 import bcrypt from "bcryptjs";
 
+const removeOtp = async (email) => {
+  await OtpModel.deleteMany({ email });
+};
+
 const sendOtp = async (req, res, next) => {
   const data = req.body;
 
@@ -26,7 +30,7 @@ const sendOtp = async (req, res, next) => {
   const token = JwtService.sign({ hashedOtp });
 
   try {
-    await OtpModel.deleteMany({ email: data.email });
+    await removeOtp(data.email);
     const newDataObj = new OtpModel({
       email: data.email,
       token,
@@ -83,11 +87,31 @@ const verifyOtp = async (req, res, next) => {
       return next(CustomError.invalidToken("Invalid otp"));
     }
 
-    await OtpModel.deleteMany({ email: data.email });
+    await removeOtp(data.email);
     res.status(200).json({ status: true, message: "Otp verified" });
   } catch (error) {
     return next();
   }
 };
 
-export { sendOtp, verifyOtp };
+const deleteOtp = async (req, res, next) => {
+  const data = req.body;
+
+  const bodySchema = Joi.object({
+    email: Joi.string().email().required(),
+  });
+
+  const { error } = bodySchema.validate(data);
+  if (error) {
+    return next(CustomError.validationError(error.message));
+  }
+
+  try {
+    await removeOtp(data.email);
+    res.status(200).json({ status: true, message: "Otp deleted" });
+  } catch (error) {
+    next();
+  }
+};
+
+export { sendOtp, verifyOtp, deleteOtp };

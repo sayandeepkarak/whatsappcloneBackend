@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 import { APP_PORT, DATABASE_URL } from "./config";
 import errorHandler from "./middlewares/errorHandler";
 import router from "./routes";
+const app = express();
+
+const port = process.env.PORT || APP_PORT;
 
 mongoose
   .connect(DATABASE_URL)
@@ -14,9 +17,12 @@ mongoose
     console.log(err);
   });
 
-const app = express();
 app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, OPTIONS, PUT, PATCH, DELETE"
+  );
   res.setHeader(
     "Access-Control-Allow-Headers",
     "X-Requested-With,content-type"

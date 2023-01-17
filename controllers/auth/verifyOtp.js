@@ -54,7 +54,7 @@ const verifyOtp = async (req, res, next) => {
       });
     }
     //generate and save token to database
-    const token = JwtService.sign({ userId: isExist._id }, "90d", SECRET_KEY);
+    const token = JwtService.sign({ userId: isExist._id }, "90d");
     await TokenModel.create({ token });
 
     res.status(200).json({

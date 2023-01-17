@@ -8,4 +8,5 @@ export const {
   EMAIL_SERVICE_USERNAME,
   EMAIL_SERVICE_KEY,
   SECRET_KEY,
+  SECRET_KEY_ACCESS,
 } = process.env;

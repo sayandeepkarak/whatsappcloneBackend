@@ -1,6 +1,7 @@
 import CustomError from "../services/CustomError";
 
 const errorHandler = (error, req, res, next) => {
+  console.log(error);
   if (error instanceof CustomError) {
     res.status(error.status).json({
       status: false,

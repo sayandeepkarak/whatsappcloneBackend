@@ -1,7 +1,10 @@
 import { model, Schema } from "mongoose";
 
-const otpSchema = new Schema(
+const userDetailsSchema = new Schema(
   {
+    fullName: {
+      type: String,
+    },
     email: {
       type: String,
       validate: {
@@ -9,16 +12,22 @@ const otpSchema = new Schema(
         message: "Please provide a valid email",
       },
       unique: true,
-      required: true,
     },
-    token: {
+    photoUrl: {
       type: String,
-      required: true,
+    },
+    isProfileComplete: {
+      type: Boolean,
+      default: false,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }
 );
 
-const OtpModel = model("otp", otpSchema);
+const UserModel = model("User", userDetailsSchema);
 
-export default OtpModel;
+export default UserModel;

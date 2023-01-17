@@ -15,6 +15,10 @@ class CustomError {
   static invalidToken(message = "Invalid token") {
     return new CustomError(401, message);
   }
+
+  static unAuthorizedError(message = "unauthorized user") {
+    return new CustomError(401, message);
+  }
 }
 
 export default CustomError;

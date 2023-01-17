@@ -5,7 +5,6 @@ import UserModel from "../../models/users";
 import { uploadImage } from "../../middlewares/fileUpload";
 import fs from "fs";
 import path from "path";
-import { SECRET_KEY } from "../../config";
 import TokenModel from "../../models/token";
 
 const uploadUserDetails = (req, res, next) => {
@@ -14,6 +13,7 @@ const uploadUserDetails = (req, res, next) => {
   // call upload
   uploader(req, res, async (err) => {
     if (err) {
+      console.log(err);
       return next();
     }
     //data and file path

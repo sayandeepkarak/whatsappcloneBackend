@@ -10,10 +10,12 @@ import TokenModel from "../../models/token";
 
 const uploadUserDetails = (req, res, next) => {
   //pass field name and get imageUpload function with multer
+  console.log("hello");
   const uploader = uploadImage("profile");
   // call upload
   uploader(req, res, async (err) => {
     if (err) {
+      console.log(err);
       return next();
     }
     //data and file path
@@ -26,6 +28,7 @@ const uploadUserDetails = (req, res, next) => {
     });
     //check if error remove image
     const { error } = bodySchema.validate(data);
+    console.log(error);
     if (error) {
       fs.unlink(path.resolve(__dirname, filePath), (er) => {
         return next();

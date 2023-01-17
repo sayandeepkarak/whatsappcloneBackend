@@ -10,12 +10,10 @@ import TokenModel from "../../models/token";
 
 const uploadUserDetails = (req, res, next) => {
   //pass field name and get imageUpload function with multer
-  console.log("hello");
   const uploader = uploadImage("profile");
   // call upload
   uploader(req, res, async (err) => {
     if (err) {
-      console.log(err);
       return next();
     }
     //data and file path
@@ -28,7 +26,6 @@ const uploadUserDetails = (req, res, next) => {
     });
     //check if error remove image
     const { error } = bodySchema.validate(data);
-    console.log(error);
     if (error) {
       fs.unlink(path.resolve(__dirname, filePath), (er) => {
         return next();
@@ -52,11 +49,7 @@ const uploadUserDetails = (req, res, next) => {
       if (!updateResult) {
         return next(CustomError.validationError("Email id doesn't exist"));
       }
-      const token = JwtService.sign(
-        { userId: updateResult._id },
-        "90d",
-        SECRET_KEY
-      );
+      const token = JwtService.sign({ userId: updateResult._id }, "90d");
       //save token to database
       await TokenModel.create({ token });
       res.status(200).json({

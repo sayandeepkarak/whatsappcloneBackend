@@ -19,6 +19,10 @@ class CustomError {
   static unAuthorizedError(message = "unauthorized user") {
     return new CustomError(401, message);
   }
+
+  static alreadyExist(message = "already exist") {
+    return new CustomError(409, message);
+  }
 }
 
 export default CustomError;

@@ -3,9 +3,10 @@ import ChatModel from "../../models/chat";
 const allChats = async (req, res, next) => {
   try {
     //get chats
-    const userChats = await ChatModel.find({
-      usersId: { $in: [req.user_id] },
-    }).select("-usersId -__v");
+    const filters = req.chatId
+      ? { _id: req.chatId }
+      : { usersId: { $in: [req.user_id] } };
+    const userChats = await ChatModel.find(filters).select("-usersId -__v");
     //check chat exist
     if (userChats.length === 0) {
       return res

@@ -23,6 +23,10 @@ class CustomError {
   static alreadyExist(message = "already exist") {
     return new CustomError(409, message);
   }
+
+  static badRequest(message = "bad request") {
+    return new CustomError(400, message);
+  }
 }
 
 export default CustomError;

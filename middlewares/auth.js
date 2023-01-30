@@ -2,21 +2,39 @@ import { SECRET_KEY_ACCESS } from "../config";
 import CustomError from "../services/CustomError";
 import JwtService from "../services/JwtService";
 
-const verifyAccess = async (req, res, next) => {
+const verifyAccess = (connectObj, token, next, error) => {
   //check header
-  const reqHead = req.headers.authorization;
+  const reqHead = token;
   if (!reqHead) {
-    return next(CustomError.unAuthorizedError());
+    return next(error);
   }
   //verify access token
-  const token = reqHead.split(" ")[1];
   try {
+    const token = reqHead.split(" ")[1];
     const { userId } = JwtService.verify(token, SECRET_KEY_ACCESS);
-    req.user_id = userId;
+    connectObj.user_id = userId;
     next();
-  } catch (error) {
-    next(CustomError.unAuthorizedError());
+  } catch (err) {
+    next(error);
   }
 };
 
-export default verifyAccess;
+const verifyAccessHttp = (req, res, next) => {
+  verifyAccess(
+    req,
+    req.headers.authorization,
+    next,
+    CustomError.unAuthorizedError()
+  );
+};
+
+const verifyAccessWs = (socket, next) => {
+  verifyAccess(
+    socket,
+    socket.handshake.headers.authorization,
+    next,
+    new Error("unathorized user detected")
+  );
+};
+
+export { verifyAccessHttp, verifyAccessWs };

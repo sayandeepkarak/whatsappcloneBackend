@@ -2,41 +2,33 @@ import { model, Schema } from "mongoose";
 
 const chatSchema = new Schema(
   {
-    users: {
+    usersId: {
       type: [String],
       required: true,
     },
-    user_one: {
-      userId: {
-        type: String,
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      photoUrl: {
-        type: String,
-        required: true,
-      },
-    },
-    user_two: {
-      userId: {
-        type: String,
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      photoUrl: {
-        type: String,
-        required: true,
-      },
+    users: {
+      type: [
+        {
+          userId: {
+            type: String,
+            required: true,
+          },
+          name: {
+            type: String,
+            required: true,
+          },
+          photoUrl: {
+            type: String,
+            required: true,
+          },
+        },
+      ],
+      required: true,
     },
     chats: [
       {
         sendBy: { type: String },
+        sendTime: { type: Date, default: Date.now() },
         message: { type: String },
       },
     ],

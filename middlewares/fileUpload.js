@@ -3,7 +3,6 @@ import path from "path";
 
 const storage = diskStorage({
   destination: (req, file, callback) => callback(null, "./uploads/"),
-  destination: (req, file, callback) => callback(null, "uploads"),
   filename: (req, file, callback) => {
     const imageName = `${Date.now()}${path.extname(file.originalname)}`;
     callback(null, imageName);

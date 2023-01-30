@@ -6,7 +6,7 @@ import router from "./routes";
 import cors from "cors";
 import cluster from "cluster";
 import http from "http";
-// import os from "os";
+import os from "os";
 import { Server } from "socket.io";
 import WsConnect from "./events/wsManage";
 import { verifyAccessWs } from "./middlewares/auth";

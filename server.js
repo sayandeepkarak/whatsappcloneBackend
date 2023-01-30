@@ -15,8 +15,7 @@ const port = process.env.PORT || APP_PORT;
 const app = express();
 const server = http.createServer(app);
 
-// const cpuCors = os.cpus().length;
-const cpuCors = 2;
+const cpuCors = os.cpus().length;
 
 if (cluster.isPrimary) {
   //active all cors

@@ -1,11 +1,9 @@
 import ChatModel from "../../models/chat";
 
-const allChats = async (req, res, next) => {
+const allConnection = async (req, res, next) => {
   try {
     //get chats
-    const filters = req.chatId
-      ? { _id: req.chatId }
-      : { usersId: { $in: [req.user_id] } };
+    const filters = { usersId: { $in: [req.user_id] } };
     const userChats = await ChatModel.find(filters).select("-usersId -__v");
     //check chat exist
     if (userChats.length === 0) {
@@ -20,6 +18,7 @@ const allChats = async (req, res, next) => {
       } else {
         delete userChats[i].users.splice(1, 1);
       }
+      userChats[i].chats.splice(0, userChats[i].chats.length - 1);
     });
 
     res.status(200).json({ status: true, data: userChats });
@@ -29,4 +28,4 @@ const allChats = async (req, res, next) => {
   }
 };
 
-export default allChats;
+export default allConnection;

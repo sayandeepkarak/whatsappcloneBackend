@@ -5,19 +5,28 @@ import errorHandler from "./middlewares/errorHandler";
 import router from "./routes";
 import cors from "cors";
 import cluster from "cluster";
-import os from "os";
-const app = express();
+import http from "http";
+// import os from "os";
+import { Server } from "socket.io";
+import WsConnect from "./events/wsManage";
+import { verifyAccessWs } from "./middlewares/auth";
 
 const port = process.env.PORT || APP_PORT;
+const app = express();
+const server = http.createServer(app);
 
-const cpuCors = os.cpus().length;
+// const cpuCors = os.cpus().length;
+const cpuCors = 2;
 
 if (cluster.isPrimary) {
+  //active all cors
   for (let i = 0; i < cpuCors; i++) {
     cluster.fork();
   }
+
   cluster.on("exit", () => cluster.fork());
 } else {
+  // express setup http
   app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
@@ -25,12 +34,21 @@ if (cluster.isPrimary) {
   app.use(errorHandler);
   app.use("/uploads", express.static("uploads"));
 
-  mongoose.set("strictQuery", false);
+  //ws setup
+  const io = new Server(server, {
+    cors: {
+      origin: ["http://localhost:3000"],
+    },
+  });
+  io.use(verifyAccessWs);
+  io.on("connection", WsConnect);
 
+  //mongoose setup
+  mongoose.set("strictQuery", false);
   mongoose
     .connect(DATABASE_URL)
     .then(() => {
-      app.listen(port, () =>
+      server.listen(port, () =>
         console.log(`Listening on port ${port} : process ${process.pid}`)
       );
     })

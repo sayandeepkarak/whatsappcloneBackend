@@ -23,8 +23,9 @@ const addPerson = async (req, res, next) => {
     //check connection
     const bothUser = [req.user_id, req.body.personId];
     const chatData = await ChatModel.find({
-      usersId: bothUser,
+      $and: [{ usersId: req.user_id }, { usersId: req.body.personId }],
     });
+
     if (chatData.length !== 0) {
       return next(CustomError.alreadyExist("Connection already created"));
     }

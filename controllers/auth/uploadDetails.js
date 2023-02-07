@@ -5,7 +5,6 @@ import UserModel from "../../models/users";
 import { uploadImage } from "../../middlewares/fileUpload";
 import fs from "fs";
 import path from "path";
-import TokenModel from "../../models/token";
 
 const uploadUserDetails = (req, res, next) => {
   //pass field name and get imageUpload function with multer
@@ -13,7 +12,6 @@ const uploadUserDetails = (req, res, next) => {
   // call upload
   uploader(req, res, async (err) => {
     if (err) {
-      console.log(err);
       return next();
     }
     //data and file path
@@ -49,9 +47,9 @@ const uploadUserDetails = (req, res, next) => {
       if (!updateResult) {
         return next(CustomError.validationError("Email id doesn't exist"));
       }
-      const token = JwtService.sign({ userId: updateResult._id }, "90d");
       //save token to database
-      await TokenModel.create({ token });
+      const token = JwtService.sign({ userId: updateResult._id }, "90d");
+      await UserModel.updateOne({ _id: updateResult._id }, { token });
       res.status(200).json({
         status: true,
         message: "Successfully updated Data",

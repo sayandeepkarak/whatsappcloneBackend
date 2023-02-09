@@ -4,8 +4,6 @@ import CustomError from "../../services/CustomError";
 import JwtService from "../../services/JwtService";
 import bcrypt from "bcryptjs";
 import UserModel from "../../models/users";
-import { SECRET_KEY } from "../../config";
-import TokenModel from "../../models/token";
 
 const verifyOtp = async (req, res, next) => {
   const data = req.body;
@@ -55,7 +53,7 @@ const verifyOtp = async (req, res, next) => {
     }
     //generate and save token to database
     const token = JwtService.sign({ userId: isExist._id }, "90d");
-    await TokenModel.create({ token });
+    await UserModel.updateOne({ _id: isExist._id }, { token });
 
     res.status(200).json({
       status: true,

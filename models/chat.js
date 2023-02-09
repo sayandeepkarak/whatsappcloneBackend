@@ -6,25 +6,6 @@ const chatSchema = new Schema(
       type: [String],
       required: true,
     },
-    users: {
-      type: [
-        {
-          userId: {
-            type: String,
-            required: true,
-          },
-          name: {
-            type: String,
-            required: true,
-          },
-          photoUrl: {
-            type: String,
-            required: true,
-          },
-        },
-      ],
-      required: true,
-    },
     chats: [
       {
         sendBy: { type: String },

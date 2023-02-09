@@ -36,7 +36,11 @@ if (cluster.isPrimary) {
   //ws setup
   const io = new Server(server, {
     cors: {
-      origin: ["http://localhost:3000"],
+      origin: [
+        "http://localhost:3000",
+        "http://whatsappclone-sayandeep18.netlify.app/authentication",
+        "https://whatsappclone-sayandeep18.netlify.app/authentication",
+      ],
     },
   });
   io.use(verifyAccessWs);

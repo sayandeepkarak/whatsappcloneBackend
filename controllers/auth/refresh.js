@@ -1,6 +1,5 @@
 import Joi from "joi";
 import { SECRET_KEY, SECRET_KEY_ACCESS } from "../../config";
-import tokenModel from "../../models/token";
 import UserModel from "../../models/users";
 import CustomError from "../../services/CustomError";
 import JwtService from "../../services/JwtService";
@@ -16,8 +15,11 @@ const refreshaccess = async (req, res, next) => {
   }
   try {
     //find token
-    const isExist = await tokenModel.findOne({ token: req.body.refreshToken });
+    const isExist = await UserModel.findOne({
+      token: req.body.refreshToken,
+    });
     if (!isExist) {
+      console.log(isExist);
       return next(CustomError.unAuthorizedError("Invalid refresh token"));
     }
     //verify token
@@ -26,9 +28,8 @@ const refreshaccess = async (req, res, next) => {
       const { userId } = JwtService.verify(isExist.token, SECRET_KEY);
       user_id = userId;
     } catch (error) {
-      return next(
-        CustomErrorHandler.unAuthorizedError("Invalid refresh token")
-      );
+      await UserModel.findByIdAndUpdate(isExist._id, { token: null });
+      return next(CustomError.unAuthorizedError("Invalid refresh token"));
     }
     //find user
     const user = await UserModel.findOne({ _id: user_id });
@@ -42,7 +43,7 @@ const refreshaccess = async (req, res, next) => {
       "1m",
       SECRET_KEY_ACCESS
     );
-    await tokenModel.updateOne({ _id: isExist._id }, { token: refreshToken });
+    await UserModel.findByIdAndUpdate(user_id, { token: refreshToken });
     res.status(200).json({
       status: true,
       message: {

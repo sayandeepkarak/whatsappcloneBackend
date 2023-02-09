@@ -1,5 +1,5 @@
 import Joi from "joi";
-import TokenModel from "../../models/token";
+import UserModel from "../../models/users";
 import CustomError from "../../services/CustomError";
 
 const logout = async (req, res, next) => {
@@ -13,9 +13,12 @@ const logout = async (req, res, next) => {
   }
   //delete token
   try {
-    const result = await TokenModel.findOneAndDelete({
-      token: req.body.refreshToken,
-    });
+    const result = await UserModel.findByIdAndUpdate(
+      {
+        _id: req.user_id,
+      },
+      { token: null }
+    );
 
     if (!result) {
       return next(CustomError.unAuthorizedError());

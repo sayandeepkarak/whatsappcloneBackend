@@ -15,7 +15,6 @@ const getLastMessage = async (req, res, next) => {
         .status(204)
         .json({ status: false, message: "No chats available" });
     }
-
     lastMessage.chats.splice(0, lastMessage.chats.length - 1);
 
     res.status(200).json({ status: true, data: lastMessage });

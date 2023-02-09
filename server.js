@@ -15,6 +15,8 @@ const port = process.env.PORT || APP_PORT;
 const app = express();
 const server = http.createServer(app);
 
+app.use(cors());
+
 const cpuCors = os.cpus().length;
 
 if (cluster.isPrimary) {
@@ -26,7 +28,6 @@ if (cluster.isPrimary) {
   cluster.on("exit", () => cluster.fork());
 } else {
   // express setup http
-  app.use(cors());
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use("/api", router);

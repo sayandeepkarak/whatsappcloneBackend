@@ -12,7 +12,7 @@ const structureData = async (data, userId) => {
     let tmp = {
       _id,
       friend: friendData,
-      chats: chats.at(-1),
+      chats: chats.length > 0 ? Array.from(chats).at(-1) : [],
     };
     newData.push(tmp);
   }

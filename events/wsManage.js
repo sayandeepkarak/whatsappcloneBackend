@@ -1,5 +1,5 @@
 const WsConnect = (socket) => {
-  console.log(`A user connected `);
+  console.log(`a user connected`);
 
   socket.on("join-chat-room", (chatId) => {
     socket.join(chatId);
@@ -14,7 +14,7 @@ const WsConnect = (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnect");
+    console.log("a user disconnect");
   });
 };
 

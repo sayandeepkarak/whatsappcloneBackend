@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../config";
+import { SECRET_KEY } from "../../config";
 
 class JwtService {
   static sign(payload, expire = "3m", secretkey = SECRET_KEY) {

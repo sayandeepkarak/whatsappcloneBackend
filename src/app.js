@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import { APP_PORT, DATABASE_URL } from "./config";
+import { APP_PORT, DATABASE_URL } from "../config";
 import errorHandler from "./middlewares/errorHandler";
 import router from "./routes";
 import cors from "cors";
@@ -8,7 +8,7 @@ import http from "http";
 import { Server } from "socket.io";
 import WsConnect from "./events/wsManage";
 
-const port = process.env.PORT || APP_PORT;
+const port = APP_PORT;
 const app = express();
 const server = http.createServer(app);
 
@@ -38,11 +38,12 @@ mongoose.set("strictQuery", false);
 mongoose
   .connect(DATABASE_URL)
   .then(() => {
-    server.listen(port, () =>
-      console.log(`Listening on port ${port} : process ${process.pid}`)
-    );
+    console.log("Connected to Database");
   })
   .catch((err) => {
     console.log("Connection failed");
-    console.log(err);
   });
+
+server.listen(port, () =>
+  console.log(`Listening on port ${port} : process ${process.pid}`)
+);

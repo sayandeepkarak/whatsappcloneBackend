@@ -1,4 +1,4 @@
-import { SECRET_KEY_ACCESS } from "../config";
+import { SECRET_KEY_ACCESS } from "../../config";
 import CustomError from "../services/CustomError";
 import JwtService from "../services/JwtService";
 

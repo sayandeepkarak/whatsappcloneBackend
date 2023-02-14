@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { SECRET_KEY, SECRET_KEY_ACCESS } from "../../config";
+import { SECRET_KEY, SECRET_KEY_ACCESS } from "../../../config";
 import UserModel from "../../models/users";
 import CustomError from "../../services/CustomError";
 import JwtService from "../../services/JwtService";

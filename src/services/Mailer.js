@@ -1,5 +1,5 @@
 import { createTransport } from "nodemailer";
-import { EMAIL_SERVICE_KEY, EMAIL_SERVICE_USERNAME } from "../config";
+import { EMAIL_SERVICE_KEY, EMAIL_SERVICE_USERNAME } from "../../config";
 
 class Mailer {
   constructor() {

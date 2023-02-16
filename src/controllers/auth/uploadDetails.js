@@ -4,7 +4,6 @@ import JwtService from "../../services/JwtService";
 import UserModel from "../../models/users";
 import { uploadImage } from "../../middlewares/fileUpload";
 import fs from "fs";
-import path from "path";
 
 const uploadUserDetails = (req, res, next) => {
   //pass field name and get imageUpload function with multer
@@ -12,6 +11,7 @@ const uploadUserDetails = (req, res, next) => {
   // call upload
   uploader(req, res, async (err) => {
     if (err) {
+      console.log(err);
       return next();
     }
     //data and file path
@@ -25,7 +25,7 @@ const uploadUserDetails = (req, res, next) => {
     //check if error remove image
     const { error } = bodySchema.validate(data);
     if (error) {
-      fs.unlink(path.resolve(__dirname, filePath), (er) => {
+      fs.unlink(filePath, (er) => {
         return next();
       });
       return next(CustomError.validationError(error.message));
@@ -38,7 +38,7 @@ const uploadUserDetails = (req, res, next) => {
         },
         {
           fullName: data.fullName,
-          photoUrl: filePath,
+          photoUrl: "/uploads/" + req.file.filename,
           isProfileComplete: true,
         },
         { new: true }

@@ -55,11 +55,13 @@ const verifyOtp = async (req, res, next) => {
     const token = JwtService.sign({ userId: isExist._id }, "90d");
     await UserModel.updateOne({ _id: isExist._id }, { token });
 
-    res.status(200).json({
+    const date = new Date();
+    date.setMonth(date.getMonth() + 3);
+    //send response with cookie
+    res.cookie("refresh-key", token, { expires: date }).status(200).json({
       status: true,
       isComplete: true,
       message: "Otp verified",
-      refreshToken: token,
     });
   } catch (error) {
     return next();

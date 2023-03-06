@@ -3,34 +3,36 @@ import mongoose from "mongoose";
 import { APP_PORT, DATABASE_URL } from "../config";
 import errorHandler from "./middlewares/errorHandler";
 import router from "./routes";
-// import cors from "cors";
+import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
 import WsConnect from "./events/wsManage";
 import path from "path";
+import cookieParser from "cookie-parser";
 
-const port = APP_PORT;
 const app = express();
-const server = http.createServer(app);
+const port = APP_PORT;
 
-// app.use(cors());
-
-// express setup http
+// middleware configurations
+app.use(
+  cors({
+    // * for cookie transport *
+    origin: ["http://localhost:3001"],
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", router);
 app.use(errorHandler);
 app.use("/uploads", express.static("uploads"));
 
-//serve react-production
+// frontend app serving
 app.use(express.static(path.join(__dirname, "../public")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
-
-//ws setup
-const io = new Server(server);
-io.on("connection", WsConnect);
 
 //mongoose setup
 mongoose.set("strictQuery", false);
@@ -43,6 +45,11 @@ mongoose
     console.log("Connection failed");
   });
 
-server.listen(port, () =>
-  console.log(`Listening on port ${port} : process ${process.pid}`)
-);
+//server configurations
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
+io.on("connection", WsConnect);
+
+server.listen(port, () => {
+  console.log(`Listening on port ${port} : process ${process.pid}`);
+});

@@ -1,25 +1,19 @@
-import Joi from "joi";
 import { SECRET_KEY, SECRET_KEY_ACCESS } from "../../../config";
 import UserModel from "../../models/users";
 import CustomError from "../../services/CustomError";
 import JwtService from "../../services/JwtService";
 
 const refreshaccess = async (req, res, next) => {
-  //validate body
-  const logoutSchema = Joi.object({
-    refreshToken: Joi.string().required(),
-  });
-  const { error } = logoutSchema.validate(req.body);
-  if (error) {
+  const token = req.cookies["refresh-key"];
+  if (!token) {
     return next(CustomError.unAuthorizedError("RefreshToken required"));
   }
   try {
     //find token
     const isExist = await UserModel.findOne({
-      token: req.body.refreshToken,
+      token,
     });
     if (!isExist) {
-      console.log(isExist);
       return next(CustomError.unAuthorizedError("Invalid refresh token"));
     }
     //verify token
@@ -36,7 +30,7 @@ const refreshaccess = async (req, res, next) => {
     if (!user) {
       return next(CustomError.unAuthorizedError("No user found"));
     }
-    //create access and refresh token update and send
+    //create access token and refresh token update and send
     const refreshToken = JwtService.sign({ userId: user_id }, "90d");
     const accessToken = JwtService.sign(
       { userId: user_id },
@@ -44,13 +38,20 @@ const refreshaccess = async (req, res, next) => {
       SECRET_KEY_ACCESS
     );
     await UserModel.findByIdAndUpdate(user_id, { token: refreshToken });
-    res.status(200).json({
-      status: true,
-      message: {
-        accessToken,
-        refreshToken,
-      },
-    });
+
+    const refreshTokenExpire = new Date();
+    const accessTokenExpire = new Date();
+    refreshTokenExpire.setMonth(refreshTokenExpire.getMonth() + 3);
+    accessTokenExpire.setMinutes(accessTokenExpire.getMinutes() + 1);
+    // set new tokens to client
+    res
+      .cookie("refresh-key", refreshToken, { expires: refreshTokenExpire })
+      .cookie("access-key", accessToken, { expires: accessTokenExpire })
+      .status(200)
+      .json({
+        status: true,
+        message: "Successfully updated tokens",
+      });
   } catch (error) {
     next();
   }

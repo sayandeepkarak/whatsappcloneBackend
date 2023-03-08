@@ -50,7 +50,11 @@ const uploadUserDetails = (req, res, next) => {
       //save token to database
       const token = JwtService.sign({ userId: updateResult._id }, "90d");
       await UserModel.updateOne({ _id: updateResult._id }, { token });
-      res.status(200).json({
+
+      const date = new Date();
+      date.setMonth(date.getMonth() + 3);
+      //send data with cookie
+      res.cookie("refresh-key", token, { expires: date }).status(200).json({
         status: true,
         message: "Successfully updated Data",
         refreshToken: token,

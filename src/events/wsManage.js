@@ -1,8 +1,17 @@
 const WsConnect = (socket) => {
-  console.log("Connected");
+  const { userId, name } = socket.handshake.query;
+  if (userId) {
+    socket.join(userId);
+    console.log(`${name} connected`);
+  }
 
   socket.on("join-chat-room", (chatId) => {
     socket.join(chatId);
+  });
+
+  socket.on("addFriend", (id, userName, friendName) => {
+    socket.to(id).emit("newFriend");
+    console.log(`${userName} connect with ${friendName}`);
   });
 
   socket.on("sendActiveResponse", (chatId) => {

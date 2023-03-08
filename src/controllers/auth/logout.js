@@ -1,21 +1,20 @@
-import Joi from "joi";
+import { SECRET_KEY } from "../../../config";
 import UserModel from "../../models/users";
 import CustomError from "../../services/CustomError";
+import JwtService from "../../services/JwtService";
 
 const logout = async (req, res, next) => {
   //validate body
-  const logoutSchema = Joi.object({
-    refreshToken: Joi.string().required(),
-  });
-  const { error } = logoutSchema.validate(req.body);
-  if (error) {
-    return next(CustomError.validationError());
+  const refreshToken = req.cookies["refresh-key"];
+  if (!refreshToken) {
+    return next(CustomError.unAuthorizedError());
   }
+  const { userId } = JwtService.verify(refreshToken, SECRET_KEY);
   //delete token
   try {
     const result = await UserModel.findByIdAndUpdate(
       {
-        _id: req.user_id,
+        _id: userId,
       },
       { token: null }
     );

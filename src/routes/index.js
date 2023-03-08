@@ -20,8 +20,8 @@ router.post("/sendOtp", sendOtp);
 router.post("/verifyOtp", verifyOtp);
 router.delete("/deleteOtp", deleteOtp);
 router.post("/uploadDetails", uploadUserDetails);
-router.post("/logout", verifyAccessHttp, logout);
-router.post("/refresh", refreshaccess);
+router.post("/logout", logout);
+router.get("/refresh", refreshaccess);
 router.get("/userDetails", verifyAccessHttp, getUserData);
 router.get("/users", getAllUsers);
 

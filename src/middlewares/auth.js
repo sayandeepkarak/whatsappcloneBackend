@@ -4,13 +4,12 @@ import JwtService from "../services/JwtService";
 
 const verifyAccessHttp = (req, res, next) => {
   //check header
-  const reqHead = req.headers.authorization;
-  if (!reqHead) {
-    return next(error);
+  const token = req.cookies["access-key"];
+  if (!token) {
+    return next(CustomError.unAuthorizedError());
   }
   //verify access token
   try {
-    const token = reqHead.split(" ")[1];
     const { userId } = JwtService.verify(token, SECRET_KEY_ACCESS);
     req.user_id = userId;
     next();

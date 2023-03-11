@@ -11,7 +11,7 @@ import path from "path";
 import cookieParser from "cookie-parser";
 
 const app = express();
-const port = APP_PORT;
+const port = process.env.PORT || APP_PORT;
 
 // middleware configurations
 app.use(
@@ -47,7 +47,7 @@ mongoose
 
 //server configurations
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, { cors: { origin: "http://localhost:3001" } });
 io.on("connection", WsConnect);
 
 server.listen(port, () => {

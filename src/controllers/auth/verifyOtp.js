@@ -10,7 +10,7 @@ const verifyOtp = async (req, res, next) => {
   //verify otp request data schema and validate
   const bodySchema = Joi.object({
     email: Joi.string().email().required(),
-    otp: Joi.string().min(6).max(6),
+    otp: Joi.string().min(6).max(6).required(),
   });
   const { error } = bodySchema.validate(data);
   if (error) {

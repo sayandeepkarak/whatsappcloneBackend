@@ -17,7 +17,7 @@ const port = process.env.PORT || APP_PORT;
 app.use(
   cors({
     // * for cookie transport *
-    origin: ["http://localhost:3001"],
+    origin: ["https://sayandeepkarak-whatsappclone.netlify.app/"],
     credentials: true,
   })
 );
@@ -47,7 +47,9 @@ mongoose
 
 //server configurations
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: "http://localhost:3001" } });
+const io = new Server(server, {
+  cors: { origin: "https://sayandeepkarak-whatsappclone.netlify.app/" },
+});
 io.on("connection", WsConnect);
 
 server.listen(port, () => {

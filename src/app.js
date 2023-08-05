@@ -17,7 +17,7 @@ const port = process.env.PORT || APP_PORT;
 app.use(
   cors({
     // * for cookie transport *
-    // origin: ["https://sayandeepkarak-whatsappclone.netlify.app"],
+    // origin: ["*"],
     // credentials: true,
   })
 );

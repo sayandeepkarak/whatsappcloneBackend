@@ -17,7 +17,7 @@ const port = process.env.PORT || APP_PORT;
 app.use(
   cors({
     // * for cookie transport *
-    // origin: ["*"],
+    // origin: ["http://localhost:3000"],
     // credentials: true,
   })
 );
